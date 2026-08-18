@@ -1,3 +1,18 @@
+"""
+Decyphra
+AI-powered blockchain wallet investigation prototype.
+
+Current stage:
+TRL 3 — Experimental proof of concept.
+
+This implementation demonstrates the feasibility of combining
+blockchain activity data, structured parsing, and an AI reasoning
+layer to produce human-readable wallet investigations.
+"""
+
+
+
+import json
 from api import (
     API_KEY,
     get_user_input,
@@ -6,6 +21,16 @@ from api import (
 
 from transfer_parser import parse_transfers
 from formatter import format_transfers
+from ai.engine import conversation, cli_loop, clean_text
+
+
+
+def welcome_message():
+    print("------------------------------------")
+    print("Welcome to Decyphra ⛓️  Intelligence")
+    print("------------------------------------\n")
+welcome_message() 
+
 
 
 def main():
@@ -35,11 +60,26 @@ def main():
             formatted_transfers
         )
 
-    print("\nWallet transfers:\n")
+    print("\nGathering onchain intelligence..\n")
 
-    for transfer in all_formatted_transfers:
-        print(transfer)
+    print("Decyphra is here to help you decipher onchain intelligence. What do you need?\n")
+
+
+    if wallet_address:
+        conversation.append({"role":"user",
+                            "content": clean_text(
+        "WALLET INVESTIGATION EVIDENCE\n\n"
+        +
+        json.dumps(all_formatted_transfers, indent=2, default=str)
+    )
+    })
+
+
+# receives structured wallet evidence and generates
+# natural-language investigative analysis.
 
 
 if __name__ == "__main__":
     main()
+    cli_loop()
+

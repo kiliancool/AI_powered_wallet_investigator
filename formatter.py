@@ -1,3 +1,8 @@
+# Prototype evidence normalization layer.
+# Converts raw blockchain/API responses into a structure
+# suitable for downstream AI analysis.
+
+
 from parser import (
     hex_to_int,
     to_decimal,
@@ -65,7 +70,7 @@ def format_transfer(transfer):
         formatted_time = None
 
     return {
-        "Block Number": block_number,
+        "block_number": block_number,
         "unique_id": unique_id,
         "tx_hash": tx_hash,
 
