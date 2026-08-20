@@ -424,13 +424,13 @@ Decyphra is an **experimental proof of concept**. It demonstrates the feasibilit
 | Aspect | Status | Timeline |
 |--------|--------|----------|
 | Ethereum Mainnet | ✅ Supported | Now |
-| L2s (Polygon, Arbitrum, Optimism) | ❌ Not supported | Phase 2 (Q4 2024) |
-| Bitcoin, Solana | ❌ Not supported | Phase 3 (2025) |
+| L2s (Polygon, Arbitrum, Optimism) | ❌ Not supported | Phase 2  |
+| Bitcoin, Solana | ❌ Not supported | Phase 3 |
 | ERC20 tokens | ✅ Supported | Now |
 | ERC721 (NFTs) | ⚠️ Partial | Limited metadata |
 | ERC1155 (Multi-token) | ⚠️ Partial | Limited support |
-| Contract interactions | ❌ Not supported | Phase 2 (Q4 2024) |
-| Liquidity pool analysis | ❌ Not supported | Phase 3 (2025) |
+| Contract interactions | ❌ Not supported | Phase 2  |
+| Liquidity pool analysis | ❌ Not supported | Phase 3 |
 
 ### Data Limitations
 
@@ -503,17 +503,7 @@ For the full vision statement, see [README.md](README.md).
 
 **Goal:** Commercial product for enterprises and institutions.
 
-### How to Contribute
-
-Decyphra is in active development. If you'd like to contribute:
-
-1. **Fork the repository**
-2. **Pick an issue or feature** (or suggest one)
-3. **Follow the architecture** (don't break the three-layer design)
-4. **Test rigorously** (especially the AI reasoning layer)
-5. **Submit a PR with clear documentation**
-
-Current priorities:
+### Current priorities:
 - Multi-chain support (Solidity/ABI parsing)
 - Token metadata enrichment
 - Web API layer
