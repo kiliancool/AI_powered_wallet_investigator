@@ -1,259 +1,268 @@
-# Decyphra Setup Guide
+Decyphra Setup Guide
 
-**TRL 3 Proof of Concept | AI-Powered Blockchain Wallet Investigation**
+TRL 3 Proof of Concept | AI-Powered Blockchain Wallet Investigation
 
----
+Decyphra combines blockchain data retrieval, deterministic parsing, structured evidence, and AI reasoning to turn raw wallet activity into understandable investigations.
 
-## Table of Contents
-
-1. [Quick Start (5 Minutes)](#quick-start-5-minutes)
-2. [API Key Configuration](#api-key-configuration)
-3. [Architecture & Security Philosophy](#architecture--security-philosophy)
-4. [AI Security & Hallucination Risk](#ai-security--hallucination-risk)
-5. [System Prompt & Evidence-First Reasoning](#system-prompt--evidence-first-reasoning)
-6. [Current Limitations](#current-limitations)
-7. [Future Roadmap](#future-roadmap)
-8. [Troubleshooting](#troubleshooting)
+«Investigate → Understand → Ask → Investigate deeper.»
 
 ---
 
-## Quick Start (5 Minutes)
+Table of Contents
 
-### Prerequisites
+1. "Quick Start" (#quick-start)
+2. "API Key Configuration" (#api-key-configuration)
+3. "Architecture" (#architecture)
+4. "Security & Evidence Philosophy" (#security--evidence-philosophy)
+5. "AI Reasoning & Hallucination Risk" (#ai-reasoning--hallucination-risk)
+6. "Evidence-First Reasoning" (#evidence-first-reasoning)
+7. "Current Limitations" (#current-limitations)
+8. "Future Roadmap" (#future-roadmap)
+9. "Troubleshooting" (#troubleshooting)
 
-- Python
-- `pip` (Python package manager)
-- Two API keys (instructions below)
+---
 
-### Installation
+Quick Start
 
-```bash
+Prerequisites
+
+- Python 3.x
+- "pip"
+- Alchemy API key
+- OpenRouter API key
+
+Installation
+
 # 1. Clone the repository
 git clone https://github.com/kiliancool/AI_powered_wallet_investigator.git
 cd AI_powered_wallet_investigator
 
 # 2. Create a virtual environment (recommended)
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
 # 3. Install dependencies
 pip install -r requirements.txt
 pip install -r ai/requirements.txt
 
-# 4. Copy the environment template
+# 4. Create your environment file
 cp .env.example .env
 
-# 5. Add your API keys to .env (see section below)
-# Edit .env with your keys
+# 5. Add your API keys
+nano .env
 
 # 6. Run Decyphra
 python main.py
-```
 
-### First Run
+First Run
 
-```
 Enter a wallet address: 0x1234567890123456789012345678901234567890
 
-Gathering onchain intelligence..
+Gathering onchain intelligence...
 
 Decyphra is here to help you decipher onchain intelligence. What do you need?
 
 You: [Ask a follow-up question or type 'exit' to quit]
-```
 
 ---
 
-## API Key Configuration
+API Key Configuration
 
-Decyphra requires **two API keys** to function. Both are free to obtain.
+Decyphra currently uses two external services:
 
-### 1. Alchemy API Key (Blockchain Data)
+- Alchemy — blockchain data
+- OpenRouter — AI reasoning
 
-Alchemy provides the blockchain data layer. It's free and includes 300M compute units/month (more than enough for experimentation).
+Both offer options suitable for experimentation, although usage limits and availability can vary.
 
-**Steps:**
+1. Alchemy
 
-1. Go to https://www.alchemy.com/
-2. Click **"Sign Up"** and create an account
-3. Verify your email
-4. Create a new app:
-   - Select **"Ethereum"** as the chain
-   - Select **"Mainnet"** as the network
-   - Name it "Decyphra" (or whatever)
-5. Copy your **API Key** from the dashboard
-6. Add it to `.env`:
-   ```
-   API_KEY=your_alchemy_api_key_here
-   ```
+Alchemy provides Ethereum blockchain data used to construct the investigation evidence.
 
-**Rate Limits:**
-- Free tier: 300M compute units/month (~3,000 wallet investigations)
-- Each wallet investigation uses approximately 100K compute units
+Setup
 
-**What Alchemy Provides:**
-- `alchemy_getAssetTransfers` – ERC20, ERC721, ERC1155, and native ETH transfers
-- Token metadata (decimals, symbols)
-- Full transaction history (paginated)
-- Historical block data
+1. Visit "https://www.alchemy.com/"
+2. Create an account.
+3. Create an application.
+4. Select Ethereum → Mainnet.
+5. Copy the API key.
+6. Add it to ".env":
 
-### 2. OpenRouter API Key (AI Reasoning)
+API_KEY=your_alchemy_api_key_here
 
-OpenRouter provides a unified interface to multiple LLMs. Free tier available with rate limits.
+Used For
 
-**Steps:**
+- Native ETH transfers
+- ERC-20 transfers
+- ERC-721 transfers
+- ERC-1155 transfers
+- Token metadata
+- Historical blockchain data
 
-1. Go to https://openrouter.ai/
-2. Click **"Sign Up"** and create an account
-3. Verify your email
-4. Go to **API Keys** in your dashboard
-5. Create a new API key
-6. Copy it and add to `.env`:
-   ```
-   OPENROUTER_API_KEY=your_openrouter_api_key_here
-   ```
-
-**Models Used:**
-
-- **Default:** `cohere/north-mini-code:free` (fast, free tier)
-- **Fallback:** `liquid/lfm-2.5-2.6b:free` (backup if default rate-limited)
-
-**Rate Limits:**
-- Free tier: 20 requests/minute, 200K tokens/day
-- Plenty for investigation workflows
-
-**Why OpenRouter Instead of Direct API?**
-- Model abstraction (can swap models without code changes)
-- Fallback mechanism for reliability
-- Unified billing and monitoring
-- Free tier is generous for proof-of-concept work
+Alchemy usage is measured in Compute Units (CUs) and depends on the API methods and number of requests made. Monitor usage through the Alchemy dashboard rather than assuming a fixed cost per investigation.
 
 ---
 
-## Architecture & Security Philosophy
+2. OpenRouter
 
-### Three-Layer Design
+OpenRouter provides the model interface for Decyphra's reasoning layer.
 
-```
+Setup
+
+1. Visit "https://openrouter.ai/"
+2. Create an account.
+3. Open API Keys.
+4. Create an API key.
+5. Add it to ".env":
+
+OPENROUTER_API_KEY=your_openrouter_api_key_here
+
+Models
+
+The configured models are defined in the project configuration.
+
+Example:
+
+DEFAULT_MODEL=cohere/north-mini-code:free
+FALLBACK_MODEL=your_configured_fallback_model
+
+Free models can have model/provider-specific rate limits and availability.
+
+Why OpenRouter?
+
+- Model abstraction
+- Easy model switching
+- Fallback support
+- Centralized API access
+- Faster experimentation during development
+
+---
+
+Architecture
+
+Decyphra separates data acquisition from AI reasoning.
+
 ┌─────────────────────────────────────────┐
-│  User Input (Wallet Address)            │
+│              USER INPUT                 │
+│       Wallet Address + Questions        │
 └────────────────┬────────────────────────┘
                  │
-┌────────────────▼────────────────────────┐
-│  BLOCKCHAIN LAYER (api.py)              │
-│  ✓ Alchemy API calls with retry logic   │
-│  ✓ Pagination handling (5 pages max)    │
-│  ✓ Error handling & timeout management  │
-│  ✓ Metadata collection                  │
+                 ▼
+┌─────────────────────────────────────────┐
+│       BLOCKCHAIN DATA LAYER             │
+│               api.py                    │
+│                                         │
+│  • Alchemy requests                     │
+│  • Transfer retrieval                   │
+│  • Pagination                           │
+│  • Metadata                             │
+│  • Error handling                       │
 └────────────────┬────────────────────────┘
                  │
-┌────────────────▼────────────────────────┐
-│  PARSING & VALIDATION LAYER             │
-│  ✓ Type checking & sanitization         │
-│  ✓ Hex conversion with fallbacks        │
-│  ✓ Decimal precision (Wei → ETH)        │
-│  ✓ Timestamp normalization              │
-│  ✓ Missing data detection               │
+                 ▼
+┌─────────────────────────────────────────┐
+│       PARSING & VALIDATION              │
+│                                         │
+│  • Type validation                      │
+│  • Hex conversion                       │
+│  • Numeric conversion                   │
+│  • Timestamp normalization              │
+│  • Missing-data detection               │
 └────────────────┬────────────────────────┘
                  │
-┌────────────────▼────────────────────────┐
-│  STRUCTURED EVIDENCE BUFFER             │
-│  ✓ JSON with metadata                   │
-│  ✓ Data completeness flags              │
-│  ✓ Truncation warnings                  │
+                 ▼
+┌─────────────────────────────────────────┐
+│        STRUCTURED EVIDENCE              │
+│                                         │
+│  • Normalized data                      │
+│  • Metadata                             │
+│  • Completeness flags                   │
+│  • Truncation indicators                │
 └────────────────┬────────────────────────┘
                  │
-┌────────────────▼────────────────────────┐
-│  AI REASONING LAYER (ai/engine.py)      │
-│  ✓ System prompt enforcement            │
-│  ✓ Conversation memory management       │
-│  ✓ Evidence-first reasoning             │
-│  ✓ Hallucination detection              │
-│  ✓ Confidence calibration               │
+                 ▼
+┌─────────────────────────────────────────┐
+│          AI REASONING LAYER             │
+│             ai/engine.py                │
+│                                         │
+│  • Evidence-first reasoning             │
+│  • System prompt constraints            │
+│  • Conversation context                 │
+│  • Uncertainty handling                 │
 └────────────────┬────────────────────────┘
                  │
-┌────────────────▼────────────────────────┐
-│  Natural Language Investigation Results │
-│  ✓ Structured reasoning output          │
-│  ✓ Evidence traceback                   │
+                 ▼
+┌─────────────────────────────────────────┐
+│         INVESTIGATION RESULTS           │
+│                                         │
+│  Facts → Patterns → Interpretation      │
+│          → Follow-up questions          │
 └─────────────────────────────────────────┘
-```
-
-### Key Separation Principles
-
-**Blockchain data is NOT instructions.** Raw API responses are treated as untrusted data, normalized and validated before reaching the AI layer.
-
-**The AI is NOT a blockchain.** The reasoning engine interprets evidence but cannot:
-- Query additional data independently
-- Access external APIs
-- Execute transactions
-- Change conclusions based on timing
-
-**Evidence is the foundation.** Every claim must be traceable to:
-1. Direct blockchain data (FACT)
-2. Deterministic calculations from that data (DERIVED)
-3. Visible patterns (OBSERVATION)
-4. Reasonable interpretation (INTERPRETATION)
-5. Or explicitly marked as UNKNOWN
 
 ---
 
-## AI Security & Hallucination Risk
+Security & Evidence Philosophy
 
-### The Problem: LLM Hallucination in Blockchain Analysis
+Blockchain data is not instructions.
 
-**Why This Matters:**
-- Users may make financial decisions based on the investigation
-- Blockchain data is immutable; AI interpretations should not be
-- Scam accusations based on false analysis could cause harm
-- Supply-chain attacks on blockchain explorers can inject malicious data
+External data such as token names, symbols, labels, and metadata is treated as untrusted content.
 
-### Our Mitigation Strategy
+The application parses and structures the data before supplying it to the reasoning layer.
 
-#### 1. **System Prompt Enforcement**
+The AI is not the blockchain.
 
-Your system prompt (in `ai/system_prompt.py`) is the primary defense. It explicitly:
+The reasoning engine interprets supplied evidence. It does not independently:
 
-- **Forbids fabrication** (24 hard prohibitions listed)
-- **Requires evidence tracing** (FACT → DERIVED → OBSERVATION → INTERPRETATION)
-- **Rejects correlation-as-causation** (common LLM error)
-- **Handles uncertainty** (UNKNOWN is a valid answer)
-- **Limits scope** (respects data limitations, doesn't extrapolate)
+- Query blockchain APIs
+- Execute transactions
+- Sign transactions
+- Change retrieved evidence
+- Establish facts outside the supplied dataset
 
-**Review the system prompt carefully.** Every restriction is there to prevent hallucination.
+Evidence is the foundation.
 
-#### 2. **Input Sanitization**
+Decyphra separates conclusions into:
 
-Before evidence reaches the AI:
+FACT → DERIVED → OBSERVATION → INTERPRETATION → HYPOTHESIS → UNKNOWN
 
-```python
-# ✓ Type validation (parser.py)
+This prevents the system from presenting an interpretation as if it were a blockchain fact.
+
+---
+
+AI Reasoning & Hallucination Risk
+
+LLMs can produce plausible but unsupported statements. Decyphra therefore uses multiple layers of mitigation.
+
+1. Evidence-First System Prompt
+
+The system prompt instructs the model to:
+
+- Avoid fabrication
+- Separate facts from interpretations
+- Respect data boundaries
+- Acknowledge uncertainty
+- Reject correlation-as-causation
+- Treat user claims as hypotheses rather than blockchain facts
+
+These are model-level constraints, not absolute guarantees.
+
+2. Deterministic Data Processing
+
+Basic blockchain data processing happens before AI reasoning.
+
 def hex_to_int(value):
     if not isinstance(value, str):
         raise TypeError("hex_to_int() expects a string")
+
     if not value.startswith(("0x", "0X")):
         raise ValueError(f"Not a hexadecimal value: {value}")
+
     return int(value, 16)
 
-# ✓ Null checks (formatter.py)
-def hex_wei_to_eth(value):
-    if value is None:
-        return None
-    # safe conversion
-```
+3. Structured Evidence
 
-**Untrusted external data includes:**
-- Token names and symbols
-- Contract metadata
-- Wallet labels
-- Transaction calldata
-- External API responses
+Example:
 
-#### 3. **Structured Evidence Buffer**
-
-Blockchain data is converted to deterministic, validated JSON before the AI sees it:
-
-```json
 {
   "transaction": {
     "hash": "0xabc...",
@@ -262,383 +271,267 @@ Blockchain data is converted to deterministic, validated JSON before the AI sees
     "from_address": "0x123...",
     "to_address": "0x456...",
     "value_eth": "1.5",
-    "token": "USDC",
+    "token_address": "0x...",
+    "token_symbol": "USDC",
     "token_decimals": 6,
     "category": "erc20"
   },
   "metadata": {
     "source": "Alchemy API",
-    "query_time": "2024-08-15T10:35:00Z",
-    "page_limit_reached": false,
-    "data_confidence": "high"
+    "page_limit_reached": false
   }
 }
-```
 
-The AI receives this structured data, not free-form text.
+The token contract address remains the authoritative identifier; metadata such as symbols is descriptive.
 
-#### 4. **Conversation Boundaries**
+4. Conversation Limits
 
-Memory management prevents context collapse:
+Conversation memory is intentionally bounded to control context size and reduce stale conversational assumptions.
 
-```python
-# Cap conversation at 15 messages
 MAX_MESSAGES = 15
 
-# Oldest messages deleted first (except system prompt)
-if len(conversation) > MAX_MESSAGES:
-    conversation[:] = [conversation[0]] + conversation[-(MAX_MESSAGES-1):]
-```
+5. Fallback Models
 
-**Why This Matters:**
-- Prevents the AI from "remembering" false patterns across 100+ messages
-- Keeps context window focused on current investigation
-- Reduces cumulative hallucination risk
-
-#### 5. **Fallback Model Strategy**
-
-If the default model fails or is rate-limited:
-
-```python
-# ai/api.py
-if response.status_code in [429, 500, 502, 503, 504]:
-    print(f"Switching to fallback model: {FALLBACK_MODEL}")
-    # Use a different, simpler model
-    # Better to get a simple answer than a hallucinated one
-```
-
-The fallback model is more conservative—less prone to creative elaboration.
-
-#### 6. **User-Supplied Claims Are Not Evidence**
-
-If the user says "This wallet is a scammer," the system treats that as a hypothesis, not a fact:
-
-```python
-# From system prompt:
-# "The user's statements may provide context or investigative hypotheses,
-#  but they do not become blockchain facts merely because the user says them."
-```
-
-### Residual Risks (Be Honest)
-
-Even with all mitigations, **some hallucination risk remains:**
-
-| Risk | Likelihood | Mitigation |
-|------|-----------|-----------|
-| AI invents token names | Low | Token names come from blockchain, not LLM |
-| AI confuses addresses | Medium | Evidence shows exact addresses; AI can't "reinterpret" them |
-| AI draws false connections | Medium | System prompt forbids correlation-as-causation |
-| AI overconfident on incomplete data | High | System prompt requires acknowledgment of data limits |
-| AI misunderstands user question | Low | Simple, direct prompts recommended |
-| Prompt injection via calldata | Low | Calldata not passed to AI; only transfers included |
-
-**Recommendation:** Treat Decyphra's output as a starting point for investigation, not a final verdict. Always verify against the primary blockchain evidence.
+If the configured model encounters a temporary failure or rate limit, Decyphra can switch to a configured fallback model.
 
 ---
 
-## System Prompt & Evidence-First Reasoning
+Evidence-First Reasoning
 
-### What Makes This Different
+Decyphra avoids jumping directly from activity to intent.
 
-Most blockchain analysis tools either:
-- **A)** Show raw data and expect users to decode it manually
-- **B)** Use AI to analyze data, but don't distinguish fact from speculation
+Example
 
-Decyphra does **C)**: Structure data intelligently, then reason over it with explicit evidence boundaries.
+Instead of:
 
-### The Reasoning Hierarchy
+"This wallet is suspicious because it received
+money and immediately moved it elsewhere."
 
-Every conclusion is classified:
+The system should reason more carefully:
 
-- **FACT:** Directly from blockchain evidence (e.g., "This address received 15 transfers")
-- **DERIVED:** Calculated from facts (e.g., "Total received: 50 ETH")
-- **OBSERVATION:** Pattern visible in the data (e.g., "90% of transfers came from 3 addresses")
-- **INTERPRETATION:** Reasonable explanation (e.g., "Suggests a concentrated relationship")
-- **HYPOTHESIS:** Possible explanation needing more evidence (e.g., "Could indicate treasury distribution")
-- **UNKNOWN:** Cannot be established from current data (e.g., "Reasons for the transfers")
+OBSERVATION:
+The wallet received 50 ETH during the observed period
+and subsequently transferred approximately 50 ETH out.
 
-**The AI never promotes a level without saying so explicitly.**
+INTERPRETATION:
+The pattern is consistent with several possible explanations,
+including treasury distribution or other rapid fund movement.
 
-### Key Design Decisions
+HYPOTHESIS:
+The activity may warrant further investigation.
 
-#### Principle 1: No Narrative-First Analysis
+UNKNOWN:
+The available evidence does not establish the intent behind
+the transfers.
 
-❌ **Bad approach:**
-```
-"This wallet is suspicious because:
-1. Received a lot of money quickly
-2. Sent it all out
-3. Therefore it's probably a money launderer"
-```
+Data boundaries matter.
 
-✅ **Good approach:**
-```
-OBSERVATION: Wallet received 50 ETH in 3 days, then sent 50 ETH out in 2 days.
+If only a limited transaction history was retrieved, the AI should say:
 
-INTERPRETATION: This is consistent with a treasury distribution, liquidity bootstrap,
-or bridge activity.
+«"Within the retrieved history..."»
 
-HYPOTHESIS: Could also indicate rapid fund movement, which has multiple explanations.
+rather than:
 
-UNCERTAINTY: The available data does not establish intent or purpose. Additional context
-needed to distinguish between legitimate and suspicious patterns.
-```
+«"This wallet always..."»
 
-#### Principle 2: Respect Data Boundaries
+Similarly, missing token metadata should be reported as unknown rather than guessed.
 
-If the blockchain API returns only 5 pages of history:
-- ❌ AI should NOT claim "This wallet primarily does X"
-- ✅ AI SHOULD say "During the observed period (500 most recent transfers), this wallet..."
+Correlation ≠ Causation
 
-If token data is missing:
-- ❌ AI should NOT guess what FAKE_TOKEN is
-- ✅ AI SHOULD say "Token transfer to unknown contract at 0xabc... (token metadata unavailable)"
+- Sending funds to an exchange does not prove exchange ownership.
+- Interacting with a suspicious contract does not prove a scam.
+- Rapid transactions do not automatically prove bot activity.
 
-#### Principle 3: Correlation ≠ Causation
-
-Sending money to an exchange does NOT mean the user owns that exchange account.
-Interacting with a suspicious contract does NOT mean the user was scammed.
-Rapid transactions do NOT automatically prove bot activity.
-
-### How to Read AI Output
-
-When Decyphra investigates a wallet, look for:
-
-1. **Explicit evidence references** – Is each claim backed by actual transaction data?
-2. **Distinction between facts and interpretations** – Does the AI say "This wallet received X transfers" vs. "This wallet is likely used for X"?
-3. **Uncertainty acknowledgment** – Does the AI admit what it doesn't know?
-4. **Actionable next steps** – Does it suggest what additional data would improve the investigation?
-
-If an output feels like speculation without evidence, it's a sign that the system prompt isn't working properly—report it.
+Patterns can justify investigation without establishing intent.
 
 ---
 
-## Current Limitations
+Current Limitations
 
-### Honest Assessment of TRL 3 Status
+Decyphra is a TRL 3 proof of concept, not a production-grade forensic platform.
 
-Decyphra is an **experimental proof of concept**. It demonstrates the feasibility of the architecture but is not production-ready. These limitations are intentional.
+Blockchain Coverage
 
-### Blockchain Coverage
+Capability| Status
+Ethereum Mainnet| ✅ Supported
+ERC-20 transfers| ✅ Supported
+ERC-721 transfers| ⚠️ Partial
+ERC-1155 transfers| ⚠️ Partial
+L2 networks| ❌ Not currently supported
+Bitcoin| ❌ Not currently supported
+Solana| ❌ Not currently supported
+Advanced contract analysis| ❌ Not currently supported
+Liquidity-pool analysis| ❌ Not currently supported
 
-| Aspect | Status | Timeline |
-|--------|--------|----------|
-| Ethereum Mainnet | ✅ Supported | Now |
-| L2s (Polygon, Arbitrum, Optimism) | ❌ Not supported | Phase 2  |
-| Bitcoin, Solana | ❌ Not supported | Phase 3 |
-| ERC20 tokens | ✅ Supported | Now |
-| ERC721 (NFTs) | ⚠️ Partial | Limited metadata |
-| ERC1155 (Multi-token) | ⚠️ Partial | Limited support |
-| Contract interactions | ❌ Not supported | Phase 2  |
-| Liquidity pool analysis | ❌ Not supported | Phase 3 |
+Data Limitations
 
-### Data Limitations
+- Transfer retrieval is intentionally bounded by the application's pagination settings.
+- Current configuration can retrieve up to 5 pages × 500 transfer records per configured retrieval path.
+- Coverage depends on wallet activity and the API queries being performed.
+- Historical price enrichment is not currently supported.
+- Token metadata may be incomplete.
+- Missing token decimals should be treated as unknown rather than assuming 18.
 
-| Limit | Value | Reason |
-|-------|-------|--------|
-| Transaction history | 5 pages × 500 transfers | API pagination limit; prevents analysis from overwhelming the AI |
-| Time range | Last ~2 years | Older activity available but not retrieved by default |
-| Balance queries | Not integrated | `get_balance()` exists but not called; WIP for Phase 2 |
-| Token metadata | Partial | Only contract-provided data; no off-chain enrichment |
-| Price history | Not supported | Cannot determine USD value at time of transfer |
+AI Limitations
 
-### AI Reasoning Scope
+Decyphra cannot reliably:
 
-Decyphra can:
-- ✅ Summarize wallet activity patterns
-- ✅ Identify repeated counterparties
-- ✅ Detect unusual transaction frequency
-- ✅ Distinguish transfers by asset type and direction
-- ✅ Acknowledge uncertainty explicitly
+- Identify the real-world owner of an address
+- Prove criminal activity
+- Determine intent from blockchain activity alone
+- Predict future behavior
+- Replace professional blockchain forensic tools
+- Guarantee that an AI interpretation is correct
 
-Decyphra cannot:
-- ❌ Identify the person controlling the wallet
-- ❌ Prove criminal activity (requires law enforcement investigation)
-- ❌ Evaluate intent (blockchain shows actions, not intent)
-- ❌ Predict future behavior
-- ❌ Provide legal or financial advice
-- ❌ Replace specialized blockchain forensics tools
+Infrastructure
 
-### Infrastructure Limitations
-
-| Component | Limitation | Impact |
-|-----------|-----------|--------|
-| CLI only | No web UI | Limited user accessibility |
-| Single-user | No authentication | Not suitable for shared use |
-| Local memory | JSON file on disk | Not scalable; no cloud backup |
-| Free-tier APIs | Rate limits apply | 300M compute units/month for Alchemy; 20 req/min for OpenRouter |
-| No caching | Every query hits the API | Repeated investigations use quota |
-
-### Known Issues
-
-1. **Truncated history displays as complete**
-   - FIXED: Data now includes `page_limit_reached` flag
-   - AI is aware of truncation
-
-2. **Token metadata inconsistencies**
-   - Alchemy sometimes returns null decimals
-   - MITIGATION: Defaults to 18 (ERC20 standard); AI warns when uncertain
-
-3. **Address confusion**
-   - Similar-looking addresses (different checksums) could confuse users
-   - MITIGATION: Always show full address; highlight when multiple addresses appear similar
+Component| Current State
+Interface| CLI
+Users| Single-user/local
+Authentication| Not implemented
+Memory| Local JSON
+Database| Not implemented
+Caching| Limited/not implemented
+API availability| External-provider dependent
+AI availability| Model/provider dependent
 
 ---
 
-## Future Roadmap
+Future Roadmap
 
-For the full vision statement, see [README.md](README.md).
+Phase 1 — Proof of Concept
 
-### Phase 1: Proof of Concept ✅ (Current)
+Goal: Demonstrate evidence-first AI wallet investigation.
 
-### Phase 2: Investigation Intelligence 
+Phase 2 — Investigation Intelligence
 
-**Goal:** Comprehensive investigation platform for a single user/research team.
+Goal: Expand wallet investigation depth, data coverage, and investigative capabilities.
 
-### Phase 3: Advanced Intelligence
+Phase 3 — Advanced Intelligence
 
-**Goal:** Production-grade platform for security teams and researchers.
+Goal: Build broader blockchain intelligence through deeper relationships, contract analysis, and cross-wallet investigation.
 
-### Phase 4: Product
+Phase 4 — Productization
 
-**Goal:** Commercial product for enterprises and institutions.
+Goal: Transform the investigation engine into a scalable product for individuals, researchers, security teams, and institutions.
 
-### Current priorities:
-- Multi-chain support (Solidity/ABI parsing)
-- Token metadata enrichment
-- Web API layer
-- Test coverage (currently zero)
+For the full product vision and roadmap, see "README.md" (README.md).
 
 ---
 
-## Troubleshooting
+Troubleshooting
 
-### "API_KEY is missing from the environment"
+"API_KEY is missing from the environment"
 
-**Problem:** `.env` file not found or `API_KEY` not set.
+Check that ".env" exists:
 
-**Solution:**
-```bash
-# 1. Check .env exists
 ls -la .env
 
-# 2. If missing, copy from example
+If missing:
+
 cp .env.example .env
+nano .env
 
-# 3. Edit .env and add your Alchemy API key
-nano .env  # or open in your editor
+Add:
 
-# 4. Make sure file is not empty
-cat .env
-```
+API_KEY=your_alchemy_api_key_here
 
-### "OPENROUTER_API_KEY is missing"
+---
 
-**Problem:** OpenRouter API key not configured.
+"OPENROUTER_API_KEY is missing"
 
-**Solution:**
-```bash
-# Edit .env and add:
+Add the key to ".env":
+
 OPENROUTER_API_KEY=your_openrouter_api_key_here
-```
 
-### "Error: Invalid wallet address"
+Restart Decyphra after saving.
 
-**Problem:** Wallet address is not a valid Ethereum address.
+---
 
-**Solution:**
-- Valid format: `0x` followed by 40 hexadecimal characters
-- Examples: `0x1234567890123456789012345678901234567890`
-- Copy directly from Etherscan; don't manually type
+"Error: Invalid wallet address"
 
-### "Rate limit exceeded / Too many requests"
+An Ethereum address contains:
 
-**Problem:** Hit API rate limits.
+- "0x"
+- 40 hexadecimal characters
 
-**Solution:**
-- Alchemy: 300M compute units/month
-  - Check usage at https://dashboard.alchemy.com
-  - Upgrade to Growth plan for higher limits
-  - Wait 24 hours for daily quota reset
+Example:
 
-- OpenRouter: 20 requests/minute
-  - Add a delay between investigations
-  - Upgrade to paid tier for higher limits
+0x1234567890123456789012345678901234567890
 
-### "No response from model"
+For real investigations, copy addresses from a trusted source instead of manually typing them.
 
-**Problem:** OpenRouter API is unreachable or your API key is invalid.
+---
 
-**Solution:**
-```bash
-# 1. Test the API key
-curl -X POST https://openrouter.ai/api/v1/chat/completions \
-  -H "Authorization: Bearer YOUR_KEY_HERE" \
-  -H "Content-Type: application/json" \
-  -d '{"model":"cohere/north-mini-code:free","messages":[{"role":"user","content":"test"}]}'
+Rate Limit / Too Many Requests
 
-# 2. Check network connectivity
-ping openrouter.ai
+Alchemy
 
-# 3. Verify API key is correct
-cat .env | grep OPENROUTER
-```
+Check your Compute Unit usage in the Alchemy dashboard.
 
-### "Transfer data is incomplete or truncated"
+If necessary:
 
-**Problem:** Wallet has more than 500 transfers; only recent ones shown.
+- Reduce repeated investigations
+- Avoid unnecessary API calls
+- Add caching
+- Consider a higher usage tier
 
-**Expected behavior:** This is intentional. The system is designed to:
-1. Show the 500 most recent transfers
-2. Tell you about the truncation
-3. Suggest that older activity is not analyzed
+OpenRouter
 
-**Why:** Older activity is usually less relevant. Analyzing 10,000+ transfers would:
-- Use too much API quota
-- Overwhelm the AI reasoning layer
-- Slow down investigation time
+Free models can have provider-specific limits.
 
-**Future improvement:** Phase 2 will add optional deep-dive mode for full history.
+If requests fail:
 
-### "The AI seems to be hallucinating"
+- Wait and retry
+- Check model availability
+- Use the configured fallback model
+- Check your OpenRouter account limits
 
-**Problem:** Output doesn't match blockchain evidence.
+---
 
-**Examples:**
-- "This wallet sent 100 ETH to an exchange" (but you only see 10 ETH transfers)
-- "Token is a well-known scam" (but there's no evidence of that in the data)
+Transfer Data Is Incomplete
 
-**Solution:**
-1. **Always verify against primary source** – Check Etherscan directly
-2. **Report the issue** with:
-   - Wallet address
-   - Exact output that was wrong
-   - Screenshot of Etherscan evidence
-3. **Cross-check the investigation data** – Run with `DEBUG=true` (if available) to see what evidence the AI received
+If Decyphra reports truncation, the configured retrieval boundary was reached.
 
-**Root causes:**
-- Truncated history makes recent activity look unusual
-- Missing token metadata leads to wrong classification
-- AI extrapolating beyond data boundaries (system prompt violation)
+This means:
 
-### "Can I use this for compliance/regulatory purposes?"
+«The investigation covers the retrieved dataset.»
 
-**Answer:** Not yet.
+It does not mean:
 
-Decyphra is an experimental research tool. It is **not** suitable for:
-- AML/KYC decisions
-- Regulatory reporting
-- Legal proceedings
-- Financial decisions
+«The wallet has no older activity.»
 
-Reasons:
-- Data may be incomplete (Ethereum-only, 500 transfer limit)
-- AI reasoning is not independently audited
-- No guarantees about accuracy
-- No liability framework
+---
 
-**Future:** Phase 4 will include compliance-grade investigation tools with audit trails and certification.
+The AI Seems to Be Hallucinating
 
+If the response doesn't match the evidence:
+
+1. Verify the transaction using a primary blockchain explorer.
+2. Compare the response with the evidence supplied to the model.
+3. Check for missing or truncated data.
+4. Record the failure for investigation/testing.
+
+Useful information to preserve:
+
+- Wallet address
+- User question
+- AI response
+- Relevant transaction evidence
+- Data supplied to the model
+
+These failures are valuable test cases for improving Decyphra's reasoning layer.
+
+---
+
+Final Principle
+
+«The blockchain provides the evidence.
+Decyphra structures it.
+AI helps interpret it.
+The user investigates further.»
+
+Investigate → Understand → Ask → Investigate deeper.
 ---
 
 ## Additional Resources
@@ -654,34 +547,3 @@ Reasons:
 | Ethereum Basics | https://ethereum.org/en/developers/docs/ |
 
 ---
-
-## Quick Reference: Environment Variables
-
-```bash
-# Blockchain Data API (Required)
-API_KEY=your_alchemy_api_key_here
-
-# AI Reasoning API (Required)
-OPENROUTER_API_KEY=your_openrouter_api_key_here
-
-# Optional (defaults shown)
-DEBUG=false
-MAX_TRANSFER_PAGES=5
-MAX_TRANSFERS_PER_PAGE=500
-MAX_CONVERSATION_MESSAGES=15
-MEMORY_FILE=memory/conversations.json
-AI_MODEL=cohere/north-mini-code:free
-AI_FALLBACK_MODEL=liquid/lfm-2.5-2.6b:free
-```
-
----
-
-## Support
-
-- **Issues?** Open a GitHub issue with error logs and wallet address (you can redact it)
-- **Feature requests?** Check the roadmap in [README.md](README.md) first
-- **Security concerns?** Email privately (don't post publicly until fixed)
-
----
-
-**Decyphra is an experimental tool. Use responsibly. Always verify findings against primary blockchain evidence.**
