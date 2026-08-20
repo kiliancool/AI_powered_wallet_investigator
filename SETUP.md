@@ -21,7 +21,7 @@
 
 ### Prerequisites
 
-- Python 3.8+
+- Python
 - `pip` (Python package manager)
 - Two API keys (instructions below)
 
@@ -491,52 +491,15 @@ For the full vision statement, see [README.md](README.md).
 
 ### Phase 1: Proof of Concept ✅ (Current)
 
-- [x] Blockchain data retrieval (Ethereum Mainnet)
-- [x] Transaction/transfer processing
-- [x] Data normalization
-- [x] AI reasoning layer
-- [x] Conversational investigation
-- [x] Persistent prototype memory
-- **Status:** Functional prototype. TRL 3 achieved.
-
-### Phase 2: Investigation Intelligence (Q4 2024 - Q1 2025)
-
-- [ ] Multi-chain investigation (Polygon, Arbitrum, Optimism)
-- [ ] Improved transaction classification (swap, stake, mint, bridge)
-- [ ] Wallet behavior analysis (clustering similar wallets)
-- [ ] Entity and address relationship mapping
-- [ ] Token-flow analysis (where did this token come from?)
-- [ ] Risk indicators (AML scoring, sanction list integration)
-- [ ] Investigation timelines (visual activity over time)
-- [ ] Balance integration (current holdings alongside history)
-- [ ] Web API (HTTP endpoints for integration)
+### Phase 2: Investigation Intelligence 
 
 **Goal:** Comprehensive investigation platform for a single user/research team.
 
-### Phase 3: Advanced Intelligence (2025)
-
-- [ ] Cross-wallet relationship analysis
-- [ ] Automated behavioral pattern detection
-- [ ] Sophisticated anomaly detection
-- [ ] Investigation confidence/evidence indicators
-- [ ] Advanced entity clustering
-- [ ] Larger-scale blockchain intelligence infrastructure
-- [ ] Integration with threat intelligence APIs
-- [ ] Custom investigation templates
+### Phase 3: Advanced Intelligence
 
 **Goal:** Production-grade platform for security teams and researchers.
 
-### Phase 4: Product (2025+)
-
-- [ ] Web interface (React/Vue)
-- [ ] Authentication & authorization
-- [ ] User investigation history
-- [ ] Shared workspaces & collaboration
-- [ ] Scalable infrastructure (Kubernetes, cloud databases)
-- [ ] Production monitoring & alerting
-- [ ] Broader blockchain coverage
-- [ ] Mobile app
-- [ ] API licensing model
+### Phase 4: Product
 
 **Goal:** Commercial product for enterprises and institutions.
 
